@@ -1,3 +1,4 @@
+import os
 import arcade
 import arcade.gui
 
@@ -12,13 +13,15 @@ PILE_THREE = 2
 PILE_FOUR = 3
 PILE_FIVE = 4
 
+path = os.path.join('assets', 'spritesheet.png')
+
 
 class LetterCard(arcade.Sprite):
 
     def __init__(self, nr):
         super().__init__(hit_box_algorithm='None', scale=0.9)
         self.nr = nr
-        self.textures = arcade.load_spritesheet("C:/Users/samue/Pictures/LetterCards/Nytt projekt2.png", 64, 64, 20,
+        self.textures = arcade.load_spritesheet(path, 64, 64, 20,
                                                 105)
         self.letter = LETTERS[int(self.nr/ 4)]
         self.texture = self.textures[nr]
@@ -71,8 +74,7 @@ class MyGame(arcade.Window):
 
         # Green or yellow switch
         self.green_or_yellow = False
-        self.green_yellow = arcade.gui.UITextureButton(texture=arcade.load_texture(
-            f"C:/Users/samue/Pictures/LetterCards/{int(self.green_or_yellow)}.png"), scale=0.6, x=333, y=300)
+        self.green_yellow = arcade.gui.UITextureButton(texture=arcade.load_texture(os.path.join('assets', f"{int(self.green_or_yellow)}.png")), scale=0.6, x=333, y=300)
 
         # Clear button
         self.clear_button = arcade.gui.UIFlatButton(text='Clear', x=70, y=72, width=58, height=48)
@@ -159,7 +161,7 @@ class MyGame(arcade.Window):
         self.green_or_yellow = not self.green_or_yellow
 
         self.green_yellow.texture = arcade.load_texture(
-            f"C:/Users/samue/Pictures/LetterCards/{int(self.green_or_yellow)}.png")
+            os.path.join('assets', f"{int(self.green_or_yellow)}.png"))
 
     def clear_(self, *_):
         self.setup()
