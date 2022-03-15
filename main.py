@@ -13,15 +13,13 @@ PILE_THREE = 2
 PILE_FOUR = 3
 PILE_FIVE = 4
 
-path = os.path.join('assets', 'spritesheet.png')
-
 
 class LetterCard(arcade.Sprite):
 
     def __init__(self, nr):
         super().__init__(hit_box_algorithm='None', scale=0.9)
         self.nr = nr
-        self.textures = arcade.load_spritesheet(path, 64, 64, 20,
+        self.textures = arcade.load_spritesheet(os.path.join('assets', 'spritesheet.png'), 64, 64, 20,
                                                 105)
         self.letter = LETTERS[int(self.nr/ 4)]
         self.texture = self.textures[nr]
