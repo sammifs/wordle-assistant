@@ -1,5 +1,7 @@
 # WordleAssistant
 
 ## Setup
-Install Aracde
+´´´
+pip install --user -r requirements.txt && python main.py
+´´´
 Run
