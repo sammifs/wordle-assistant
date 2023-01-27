@@ -4,7 +4,8 @@ wordle assistant is a tool written in Python using the [Arcade](https://api.arca
 ## How to use
 The binary version can be found in the releases.
 
-Alternatively, run the python script: 
+Alternatively, run the python script:
+
 `pip install --user -r requirements.txt && python main.py`
 
 Run
