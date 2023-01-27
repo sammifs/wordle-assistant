@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
     """Main application class"""
 
     def __init__(self):
-        super().__init__(700, 500, 'Wordle Assistant')
+        super().__init__(700, 500, 'wordle assistant')
 
         arcade.set_background_color(arcade.color.ANTI_FLASH_WHITE)
 
