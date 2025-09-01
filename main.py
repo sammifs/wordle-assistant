@@ -1,6 +1,6 @@
 import os
 import arcade
-import arcade.gui
+from arcade import gui
 
 LETTERS = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c',
            'v', 'b', 'n', 'm']
@@ -19,10 +19,31 @@ class LetterCard(arcade.Sprite):
     def __init__(self, nr):
         super().__init__(hit_box_algorithm='None', scale=0.9)
         self.nr = nr
-        self.textures = arcade.load_spritesheet(os.path.join('assets', 'spritesheet.png'), 64, 64, 20,
-                                                105)
-        self.letter = LETTERS[int(self.nr/ 4)]
-        self.texture = self.textures[nr]
+        
+        # In arcade 3.x, load_spritesheet returns a SpriteSheet object
+        spritesheet_path = os.path.join('assets', 'spritesheet.png')
+        spritesheet = arcade.load_spritesheet(spritesheet_path)
+        
+        # Get textures using the correct API
+        # Based on 1280x384 image and 104 total sprites (26 letters × 4 states each)
+        try:
+            self.textures = spritesheet.get_texture_grid(
+                size=(64, 64),     # sprite width, height (1280/20=64, 384/6=64)
+                columns=20,        # 
+                count=104          # total number of sprites
+            )
+        except Exception as e:
+            # Fallback: load single texture
+            print(f"Warning: Could not load spritesheet grid: {e}")
+            base_texture = arcade.load_texture(spritesheet_path)
+            self.textures = [base_texture] * 104
+
+        self.letter = LETTERS[int(self.nr / 4)]
+        if self.nr < len(self.textures):
+            self.texture = self.textures[nr]
+        else:
+            # Fallback texture
+            self.texture = arcade.load_texture(spritesheet_path)
         self.zero_or_one = False
 
         self.og_position = None
@@ -67,18 +88,18 @@ class MyGame(arcade.Window):
 
         self.piles = None
 
-        self.manager = arcade.gui.UIManager()
+        self.manager = gui.UIManager()
         self.manager.enable()
 
         # Green or yellow switch
         self.green_or_yellow = False
-        self.green_yellow = arcade.gui.UITextureButton(texture=arcade.load_texture(os.path.join('assets', f"{int(self.green_or_yellow)}.png")), scale=0.6, x=333, y=300)
+        self.green_yellow = gui.UITextureButton(texture=arcade.load_texture(os.path.join('assets', f"{int(self.green_or_yellow)}.png")), scale=0.6, x=333, y=300)
 
         # Clear button
-        self.clear_button = arcade.gui.UIFlatButton(text='Clear', x=70, y=72, width=58, height=48)
+        self.clear_button = gui.UIFlatButton(text='Clear', x=70, y=72, width=58, height=48)
 
         # Forward button
-        self.forward_button = arcade.gui.UITextureButton(texture=arcade.load_texture(
+        self.forward_button = gui.UITextureButton(texture=arcade.load_texture(
             ':resources:/onscreen_controls/flat_dark/play.png'), x=585, y=72,
             texture_hovered=arcade.load_texture(':resources:/onscreen_controls/shaded_dark/play.png'))
 
@@ -188,12 +209,12 @@ class MyGame(arcade.Window):
         for x,y in gula:
             word_list = [ele for ele in word_list if x in ele]
             word_list = [ele for ele in word_list if str(x) != ele[y]]
-        messagebox = arcade.gui.UIMessageBox(width=450,height=450, message_text=str(word_list))
+        messagebox = gui.UIMessageBox(width=450,height=450, message_text=str(word_list))
         self.manager.add(messagebox)
 
     # Draw/Render order methods
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Draw letter cards
         self.pile_mat_list.draw()
